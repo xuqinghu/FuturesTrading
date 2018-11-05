@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tl="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/rl"
+        android:layout_width="match_parent"
+        android:layout_height="44dp">
+
+        <LinearLayout
+            android:id="@+id/ll_back"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="15dp"
+                android:background="@mipmap/icon_back" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_commodity_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="纽期金"
+                android:textColor="#000000"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_commodity_contract"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_commodity_name"
+                android:layout_gravity="center"
+                android:text="GC1806"
+                android:textColor="#a6a6a6"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:text="细则"
+            android:textColor="#484848"
+            android:textSize="15sp" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+
+        <LinearLayout
+            android:id="@+id/ll_pop"
+            android:layout_width="70dp"
+            android:layout_height="100dp"
+            android:layout_centerVertical="true"
+            android:background="#e0ebebeb"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:text="高:1211.19"
+                android:textColor="@color/gray_8c8c8c"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="低:1211.11"
+                android:textColor="@color/gray_8c8c8c"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="开:1211.10"
+                android:textColor="@color/gray_8c8c8c"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="收:1220.78"
+                android:textColor="@color/gray_8c8c8c"
+                android:textSize="10sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:text="10-15 09:42"
+                android:textColor="@color/gray_8c8c8c"
+                android:textSize="10sp" />
+
+        </LinearLayout>
+
+        <com.wordplat.ikvstockchart.InteractiveKLineLayout1
+            android:id="@+id/kl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:axisColor="#ebebeb"
+            app:candleExtremumLableColor="@color/white"
+            app:gridColor="#ebebeb"
+            app:markerTextColor="@color/white"
+            app:xLabelColor="#484848"
+            app:yLabelColor="#484848" />
+
+    </RelativeLayout>
+
+    <com.flyco.tablayout.SlidingTabLayout
+        android:id="@+id/sl_deal"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:background="@color/white"
+        tl:tl_indicator_color="@color/red"
+        tl:tl_indicator_gravity="BOTTOM"
+        tl:tl_indicator_height="2dp"
+        tl:tl_indicator_width="80dp"
+        tl:tl_tab_space_equal="true"
+        tl:tl_textSelectColor="#333333"
+        tl:tl_textUnselectColor="#82898c"
+        tl:tl_textsize="15sp"
+        tl:tl_underline_color="@color/white"
+        tl:tl_underline_height="0dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vp_deal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+</LinearLayout>

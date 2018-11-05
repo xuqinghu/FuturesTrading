@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.xuantie.futures">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ApplyAccountActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Login1Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.mine.personalSetting.PersonalSettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.edit.EditOptionalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.add.AddOptionalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.detail.CommodityDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.detail.LandscapeActivity"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".FastLoginActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.mine.announcement.AnnouncementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.mine.money.MoneyActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name=".ui.mine.money.record.SelectTimeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.OptionalActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.market.detail.DealActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+    </application>
+
+</manifest>

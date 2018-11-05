@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tool="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll"
+        android:layout_width="70dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:background="#e0ebebeb"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_high"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:text="高:1211.19"
+            android:textColor="@color/gray_8c8c8c"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_low"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="低:1211.11"
+            android:textColor="@color/gray_8c8c8c"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_open"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="开:1211.10"
+            android:textColor="@color/gray_8c8c8c"
+            android:textSize="10sp" />
+
+        <TextView
+            android:id="@+id/tv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="收:1220.78"
+            android:textColor="@color/gray_8c8c8c"
+            android:textSize="10sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1"
+            android:text="10-15 09:42"
+            android:textColor="@color/gray_8c8c8c"
+            android:textSize="10sp" />
+
+    </LinearLayout>
+
+    <com.wordplat.ikvstockchart.InteractiveKLineLayout
+        android:id="@+id/kLineLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:axisColor="#ebebeb"
+        app:candleExtremumLableColor="@color/white"
+        app:gridColor="#ebebeb"
+        app:markerTextColor="@color/white"
+        app:xLabelColor="#484848"
+        app:yLabelColor="#484848">
+
+        <TextView
+            android:id="@+id/MA_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            tool:text="@string/ma_normal" />
+
+        <TextView
+            android:id="@+id/StockIndex_Text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|bottom"
+            android:layout_marginBottom="90dp"
+            android:layout_marginRight="12dp"
+            android:textColor="@color/white"
+            android:textSize="8sp"
+            tool:text="@string/macd_normal" />
+
+        <ImageView
+            android:id="@+id/iv_full_screen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_marginBottom="97dp"
+            android:layout_marginRight="10dp"
+            android:background="@mipmap/screen_switch" />
+
+
+        <RadioGroup
+            android:id="@+id/But_Group"
+            android:layout_width="150dp"
+            android:layout_height="@dimen/stock_index_tab_height"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="90dp"
+            android:layout_marginLeft="10dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/VOL_But"
+                style="@style/StockIndexTabStyle"
+                android:layout_height="match_parent"
+                android:text="VOL" />
+
+            <RadioButton
+                android:id="@+id/MACD_But"
+                style="@style/StockIndexTabStyle"
+                android:layout_height="match_parent"
+                android:text="MACD" />
+
+            <RadioButton
+                android:id="@+id/KDJ_But"
+                style="@style/StockIndexTabStyle"
+                android:layout_height="match_parent"
+                android:text="KDJ" />
+
+
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/Left_Loading_Image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="20dp"
+            android:visibility="gone"
+            app:srcCompat="@drawable/vector_drawable_loading2_anim" />
+
+    </com.wordplat.ikvstockchart.InteractiveKLineLayout>
+
+</RelativeLayout>

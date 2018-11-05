@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">FuturesTrading</string>
+    <string name="dont_have_net">无网络连接</string>
+    <string name="net_not_good">网络正在开小差</string>
+    <string name="gendan_help">1.跟单时，请确保资金充足\n2.如需取消跟单，请手动撤销\n3.已开仓且未平仓的跟单，暂不支持撤销\n4.退出应用，未撤销的跟单仍会继续执行</string>
+</resources>
