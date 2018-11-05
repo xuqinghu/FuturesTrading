@@ -1,5 +1,10 @@
 package com.netty.client;
+import android.text.TextUtils;
+import android.util.Log;
+
 import com.netty.flatbuffers.FbBizMsg;
+import com.netty.flatbuffers.FbFuturesQuotation;
+import com.netty.flatbuffers.FbFuturesQuotationList;
 
 import java.nio.ByteBuffer;
 
@@ -30,6 +35,8 @@ public class NettyClient {
 	Bootstrap bootstrap;
 
 	ChannelFuture future;
+
+	private TestListen testListen;
 
 	private EventExecutorGroup bizGroup = null;
 	private static NettyClient mNettyClient;
@@ -65,9 +72,15 @@ public class NettyClient {
 							ByteBuffer body = bizMsg.msgBodyAsByteBuffer();
 							switch (bizMsg.msgType()){
 								case MsgConstants.REGISTER_QUOTATION:
-									break;
+									if(TextUtils.equals(code,MsgConstants.SUCCESS)){
+										FbFuturesQuotationList fbFuturesQuotationList = FbFuturesQuotationList.getRootAsFbFuturesQuotationList(body);
+										testListen.success(fbFuturesQuotationList);
+									}else {
+										testListen.fail(msg);
+									}
 								case MsgConstants.PUSH_QUOTATION:
-									break;
+									body = bizMsg.msgBodyAsByteBuffer();
+									FbFuturesQuotation fq1 = FbFuturesQuotation.getRootAsFbFuturesQuotation(body);
 							}
 
 						}
@@ -143,6 +156,16 @@ public class NettyClient {
 	public void sendQ(byte[] bts) {
 		System.out.println("发送数据");
 		mNettyClient.future.channel().writeAndFlush(bts);
+	}
+
+
+	public void test(TestListen listen){
+		this.testListen = listen;
+	}
+
+	public interface TestListen{
+		void success(FbFuturesQuotationList resp);
+		void fail(String msg);
 	}
 	
 }

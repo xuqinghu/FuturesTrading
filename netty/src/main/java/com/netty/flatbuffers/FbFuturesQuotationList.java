@@ -4,7 +4,6 @@ package com.netty.flatbuffers;
 
 import java.nio.*;
 import java.lang.*;
-import java.util.*;
 
 @SuppressWarnings("unused")
 public final class FbFuturesQuotationList extends Table {

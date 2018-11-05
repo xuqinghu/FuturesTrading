@@ -16,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.netty.client.NettyClient;
 import com.netty.client.NewNettyClient;
 import com.netty.flatbuffers.FbBizMsg;
+import com.netty.flatbuffers.FbFuturesQuotationList;
 import com.netty.flatbuffers.FbMsgGoodInfo;
 import com.netty.flatbuffers.FbMsgGoodsInfoList;
 import com.netty.flatbuffers.FlatBufferBuilder;
@@ -67,6 +69,7 @@ public class MarketFragment extends BaseFragment {
 
     private void initData(){
         sendGoodMsg();
+        sendTest();
         NewNettyClient.getInstance().getGoods(new NewNettyClient.GoodsListen() {
             @Override
             public void success(FbMsgGoodsInfoList resp) {
@@ -79,6 +82,18 @@ public class MarketFragment extends BaseFragment {
 
             @Override
             public void fail() {
+
+            }
+        });
+
+        NettyClient.getInstance().test(new NettyClient.TestListen() {
+            @Override
+            public void success(FbFuturesQuotationList resp) {
+                Log.d("FbFuturesQuotationList",resp.FbFuturesQuotationListLength()+"");
+            }
+
+            @Override
+            public void fail(String msg) {
 
             }
         });
@@ -103,6 +118,17 @@ public class MarketFragment extends BaseFragment {
         if (mFragments.size() > 0 && mFragments != null) {
             mSlMarket.setViewPager(mVpMarket, marketName, getActivity(), mFragments);
         }
+    }
+
+    private void sendTest(){
+        FlatBufferBuilder headbuilder = new FlatBufferBuilder();
+        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
+                headbuilder.createString("imtoken"),
+                headbuilder.createString(""),
+                headbuilder.createString("Q0001"),
+                0, 0, headbuilder.createString("20181026113000"), 0);
+        headbuilder.finish(head_ofs);
+        NettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
     }
 
     private void sendGoodMsg(){

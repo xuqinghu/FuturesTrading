@@ -10,6 +10,7 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.netty.client.NettyClient;
 import com.netty.client.NewNettyClient;
 import com.netty.flatbuffers.FbBizMsg;
+import com.netty.flatbuffers.FbFuturesQuotationList;
 import com.netty.flatbuffers.FbMsgCaptchaResp;
 import com.netty.flatbuffers.FlatBufferBuilder;
 import com.xuantie.futures.base.BaseActivity;
@@ -75,18 +76,6 @@ public class MainActivity extends BaseActivity {
     private void initView() {
         NewNettyClient.getInstance().connect();
         NettyClient.getInstance().connect();
-        FlatBufferBuilder headbuilder = new FlatBufferBuilder();
-        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
-                headbuilder.createString("imtoken"),
-                headbuilder.createString(""),
-                headbuilder.createString("Q0001"),
-                0, 0, headbuilder.createString("20181026113000"), 0);
-        headbuilder.finish(head_ofs);
-        NettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
-    }
-
-    private void sendQ(String bts) {
-
     }
 
     @Override
