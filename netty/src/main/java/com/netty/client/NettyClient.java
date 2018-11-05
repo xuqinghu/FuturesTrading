@@ -1,4 +1,8 @@
 package com.netty.client;
+import com.netty.flatbuffers.FbBizMsg;
+
+import java.nio.ByteBuffer;
+
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -54,7 +58,17 @@ public class NettyClient {
 					ch.pipeline().addLast(new NettyMessageDecoder());
 					ch.pipeline().addLast(new NettyClientDuplexHandler(new NettyClientDuplexHandler.NettyClientDataListen() {
 						@Override
-						public void getData(NettyMessage bizMsg) {
+						public void getData(NettyMessage message) {
+							FbBizMsg bizMsg = FbBizMsg.getRootAsFbBizMsg(message.getBizMsg());
+							String code = bizMsg.code();
+							String msg = bizMsg.msg();
+							ByteBuffer body = bizMsg.msgBodyAsByteBuffer();
+							switch (bizMsg.msgType()){
+								case MsgConstants.REGISTER_QUOTATION:
+									break;
+								case MsgConstants.PUSH_QUOTATION:
+									break;
+							}
 
 						}
 					}));

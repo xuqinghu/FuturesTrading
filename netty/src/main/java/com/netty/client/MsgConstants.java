@@ -29,8 +29,12 @@ public class MsgConstants {
 	public final static String PUSH_QUOTATION = "Q0002";
 
 	public final static String YZM = "T1000";
+
+	public final static String LOGIN = "T1001";
+
+	public final static String GOODS = "C1001";
 	
-	
+	public final static String SUCCESS = "0";
 	/** 默认心跳报文 */
 	public static final byte[] HEATBEAT_MSG = FbUtil.createHearBeatMsg();
 	

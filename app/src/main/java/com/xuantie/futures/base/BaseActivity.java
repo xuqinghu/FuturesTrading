@@ -266,6 +266,12 @@ public class BaseActivity extends AppCompatActivity implements LifecycleProvider
         overridePendingTransition(R.anim.anim_activity_right_in, R.anim.anim_activity_left_out);
     }
 
+    @Override
+    public void startActivityForResult(Intent intent,int code){
+        super.startActivityForResult(intent,code);
+        overridePendingTransition(android.R.anim.fade_in,  android.R.anim.fade_out);
+    }
+
     /**
      * 常规Activity从左至右退出动画
      */
@@ -298,5 +304,17 @@ public class BaseActivity extends AppCompatActivity implements LifecycleProvider
 
     public void finishSplash(){
         super.finish();
+    }
+
+    //无动画跳转
+    public void startActivityForResultNoAnim(Intent intent,int code){
+        super.startActivityForResult(intent,code);
+        overridePendingTransition(0,  0);
+    }
+
+    //无动画关闭
+    public void finishNoAnim(){
+        super.finish();
+        overridePendingTransition(0,  0);
     }
 }

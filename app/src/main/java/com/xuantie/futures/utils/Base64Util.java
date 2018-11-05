@@ -26,4 +26,9 @@ public class Base64Util {
 
         return bitmap;
     }
+
+    public static byte [] base64ToByte(String base64String){
+        byte[] decode = Base64.decode(base64String, Base64.DEFAULT);
+        return decode;
+    }
 }

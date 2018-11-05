@@ -74,29 +74,15 @@ public class MainActivity extends BaseActivity {
 
     private void initView() {
         NewNettyClient.getInstance().connect();
-//        NettyClient.getInstance().connect();
+        NettyClient.getInstance().connect();
         FlatBufferBuilder headbuilder = new FlatBufferBuilder();
-//        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
-//                headbuilder.createString("imtoken"),
-//                headbuilder.createString(""),
-//                headbuilder.createString("Q0001"),
-//                0, 0, headbuilder.createString("20181026113000"), 0);
-//        headbuilder.finish(head_ofs);
-//        NettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
-                int head_yzm = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
+        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
                 headbuilder.createString("imtoken"),
                 headbuilder.createString(""),
-                headbuilder.createString("T1000"),
+                headbuilder.createString("Q0001"),
                 0, 0, headbuilder.createString("20181026113000"), 0);
-        headbuilder.finish(head_yzm);
-        NewNettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
-        NewNettyClient.getInstance().getYzm(new NewNettyClient.YzmListen() {
-            @Override
-            public void getData(FbMsgCaptchaResp resp) {
-                Base64Util.base64ToBitmap(resp.verifyCode());
-                Log.d("YZM",resp.verifyCode()+"");
-            }
-        });
+        headbuilder.finish(head_ofs);
+        NettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
     }
 
     private void sendQ(String bts) {

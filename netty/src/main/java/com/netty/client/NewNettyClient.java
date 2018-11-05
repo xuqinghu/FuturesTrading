@@ -1,12 +1,11 @@
 package com.netty.client;
 
-import android.util.Log;
-
+import android.text.TextUtils;
 import com.netty.flatbuffers.FbBizMsg;
 import com.netty.flatbuffers.FbMsgCaptchaResp;
-
+import com.netty.flatbuffers.FbMsgGoodsInfoList;
+import com.netty.flatbuffers.FbMsgLoginRsp;
 import java.nio.ByteBuffer;
-
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -33,7 +32,11 @@ public class NewNettyClient {
 
     ChannelFuture future;
 
-    private YzmListen listen;
+    private YzmListen yzmListen;
+
+    private LoginListen loginListen;
+
+    private GoodsListen goodsListen;
 
     private EventExecutorGroup bizGroup = null;
     private static NewNettyClient mNettyClient;
@@ -64,12 +67,34 @@ public class NewNettyClient {
                         @Override
                         public void getData(NettyMessage message) {
                             FbBizMsg bizMsg = FbBizMsg.getRootAsFbBizMsg(message.getBizMsg());
-                            ByteBuffer body = null;
+                            String code = bizMsg.code();
+                            String msg = bizMsg.msg();
+                            ByteBuffer body = bizMsg.msgBodyAsByteBuffer();
                             switch (bizMsg.msgType()){
                                 case MsgConstants.YZM:
-                                    body = bizMsg.msgBodyAsByteBuffer();
-                                    FbMsgCaptchaResp fbMsgCaptchaResp = FbMsgCaptchaResp.getRootAsFbMsgCaptchaResp(body);
-                                    listen.getData(fbMsgCaptchaResp);
+                                    if(TextUtils.equals(code,MsgConstants.SUCCESS)){
+                                        FbMsgCaptchaResp fbMsgCaptchaResp = FbMsgCaptchaResp.getRootAsFbMsgCaptchaResp(body);
+                                        yzmListen.success(fbMsgCaptchaResp);
+                                    }else {
+                                        yzmListen.fail(msg);
+                                    }
+                                    break;
+                                case MsgConstants.LOGIN:
+                                    if(TextUtils.equals(code,MsgConstants.SUCCESS)){
+                                        FbMsgLoginRsp fbMsgLoginRsp = FbMsgLoginRsp.getRootAsFbMsgLoginRsp(body);
+                                        loginListen.success(fbMsgLoginRsp);
+                                    }else {
+                                        loginListen.fail(msg);
+                                    }
+                                    break;
+                                case MsgConstants.GOODS:
+                                    if(TextUtils.equals(code,MsgConstants.SUCCESS)){
+                                        FbMsgGoodsInfoList fbMsgGoodsInfoList = FbMsgGoodsInfoList.getRootAsFbMsgGoodsInfoList(body);
+                                        goodsListen.success(fbMsgGoodsInfoList);
+                                    }else {
+                                        loginListen.fail(msg);
+                                    }
+                                    break;
                             }
                         }
                     }));
@@ -147,10 +172,29 @@ public class NewNettyClient {
 
     //获取验证码
     public void getYzm(YzmListen listen){
-        this.listen = listen;
+        this.yzmListen = listen;
     }
 
     public interface YzmListen{
-        void getData(FbMsgCaptchaResp resp);
+        void success(FbMsgCaptchaResp resp);
+        void fail(String msg);
+    }
+
+    //登录
+    public void login(LoginListen listen){
+        this.loginListen = listen;
+    }
+    public interface LoginListen{
+        void success(FbMsgLoginRsp resp);
+        void fail(String msg);
+    }
+
+    //获取商品
+    public void getGoods(GoodsListen listen){
+        this.goodsListen = listen;
+    }
+    public interface GoodsListen{
+        void success(FbMsgGoodsInfoList resp);
+        void fail();
     }
 }

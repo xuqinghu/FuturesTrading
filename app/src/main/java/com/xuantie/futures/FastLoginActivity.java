@@ -25,6 +25,8 @@ public class FastLoginActivity extends BaseActivity {
     @BindView(R.id.et_yzm)
     EditText mEtYzm;
     private Unbinder mUnbinder;
+    private final int REQ_CODE = 101;
+    public static final int RESULT_CODE = 102;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,12 +48,20 @@ public class FastLoginActivity extends BaseActivity {
                 finishLogin();
                 break;
             case R.id.tv_go_login:
-                startActivity(new Intent(this,LoginActivity.class));
+                startActivityForResultNoAnim(new Intent(this,LoginActivity.class),REQ_CODE);
                 break;
             case R.id.tv_get_yzm:
                 break;
             case R.id.btn_login:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQ_CODE&&resultCode==RESULT_CODE){
+            finish();
         }
     }
 }
