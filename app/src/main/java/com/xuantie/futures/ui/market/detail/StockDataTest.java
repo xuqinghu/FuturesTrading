@@ -1,5 +1,7 @@
 package com.xuantie.futures.ui.market.detail;
 
+import com.netty.flatbuffers.FbKLineData;
+import com.netty.flatbuffers.FbKLineDataList;
 import com.wordplat.ikvstockchart.entry.Entry;
 import com.wordplat.ikvstockchart.entry.EntrySet;
 import com.xuantie.futures.network.bean.resp.KLineResp;
@@ -31,6 +33,21 @@ public class StockDataTest {
         EntrySet entrySet = new EntrySet();
         for (String price : prices) {
             entrySet.addEntry(new Entry(Float.parseFloat(price)));
+        }
+        return entrySet;
+    }
+
+    public static EntrySet parseKLineData(FbKLineDataList fbKLineDataList){
+        final EntrySet entrySet = new EntrySet();
+        FbKLineData fbKLineData = null;
+        for(int i=0;i<fbKLineDataList.DataListLength();i++){
+            fbKLineData = fbKLineDataList.DataList(i);
+            float open = fbKLineData.openPrice();
+            float high = fbKLineData.highPrice();
+            float low =  fbKLineData.lowerPrice();
+            float close = fbKLineData.closePrice();
+            int volume = (int) fbKLineData.vol();
+            entrySet.addEntry(new Entry(open, high, low, close, volume, ""));
         }
         return entrySet;
     }

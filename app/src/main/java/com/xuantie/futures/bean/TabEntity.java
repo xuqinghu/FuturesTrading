@@ -17,6 +17,10 @@ public class TabEntity implements CustomTabEntity {
         this.unSelectedIcon = unSelectedIcon;
     }
 
+    public TabEntity(String title) {
+        this.title = title;
+    }
+
     @Override
     public String getTabTitle() {
         return title;

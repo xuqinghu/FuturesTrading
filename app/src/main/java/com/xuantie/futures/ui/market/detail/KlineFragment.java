@@ -1,5 +1,6 @@
 package com.xuantie.futures.ui.market.detail;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.drawable.Animatable;
@@ -9,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,6 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.netty.client.KlineNettyClient;
+import com.netty.client.NettyClient;
+import com.netty.flatbuffers.FbBizMsg;
+import com.netty.flatbuffers.FbKLineDataList;
+import com.netty.flatbuffers.FbKLineReq;
+import com.netty.flatbuffers.FbMsgLoginReq;
+import com.netty.flatbuffers.FlatBufferBuilder;
 import com.wordplat.ikvstockchart.InteractiveKLineLayout;
 import com.wordplat.ikvstockchart.KLineHandler;
 import com.wordplat.ikvstockchart.KLineMoveHandler;
@@ -74,10 +83,17 @@ public class KlineFragment extends BaseFragment {
     private List<KLineResp> list = new ArrayList<>();
     //日线、1分钟线、5分钟线等等
     private String mKlineType;
+    private String contractNo;
 
     public static KlineFragment newInstance() {
         KlineFragment fragment = new KlineFragment();
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        contractNo = ((CommodityDetailActivity) activity).getcontractNo();//通过强转成宿主activity，就可以获取到传递过来的数据
     }
 
     @Nullable
@@ -88,8 +104,6 @@ public class KlineFragment extends BaseFragment {
         mKLineLayout.getKLineView().setEnableRightRefresh(false);
         initSize();
         initView();
-        mKlineType = "m1";
-        loadKLineData(false, "", 0);
         return view;
     }
 
@@ -98,6 +112,39 @@ public class KlineFragment extends BaseFragment {
         SizeColor.yLabelSize = ViewUtils.dpTopx(getContext(), 7);
         SizeColor.markerTextSize = ViewUtils.dpTopx(getContext(), 8);
         SizeColor.candleExtremumLabelSize = ViewUtils.dpTopx(getContext(), 7);
+    }
+
+    public void getKlineData(String klineType){
+        mKlineType = klineType;
+        sendKlineMsg();
+        KlineNettyClient.getInstance().getKline(new KlineNettyClient.KlineListen() {
+            @Override
+            public void success(FbKLineDataList resp) {
+                Log.d("FbKLineDataList","日期:"+resp.DataList(0).Date()+"时间:"+resp.DataList(0).Time());
+            }
+
+            @Override
+            public void fail(String msg) {
+
+            }
+        });
+    }
+
+    private void sendKlineMsg(){
+        FlatBufferBuilder fb = new FlatBufferBuilder();
+        int contract = fb.createString(contractNo);
+        int lineType = fb.createString(mKlineType);
+        int rangeType = fb.createString("2");
+        int klineReq = FbKLineReq.createFbKLineReq(fb, contract,lineType,rangeType);
+        fb.finish(klineReq);
+        FlatBufferBuilder headbuilder = new FlatBufferBuilder();
+        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
+                headbuilder.createString("imtoken"),
+                headbuilder.createString(""),
+                headbuilder.createString("Q1001"),
+                0, 0, headbuilder.createString("20181026113000"),headbuilder.createByteVector(fb.sizedByteArray()));
+        headbuilder.finish(head_ofs);
+        KlineNettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
     }
 
     private void initView() {

@@ -17,6 +17,10 @@ public final class FbFuturesQuotation extends Table {
   public ByteBuffer DateTimeAsByteBuffer() { return __vector_as_bytebuffer(4, 1); }
   public ByteBuffer DateTimeInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 4, 1); }
   public String GoodsNo() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
+  public String GoodsName;
+  public String GoodsNo;
+  public float LastPrice;
+  public String ContractNo;
   public ByteBuffer GoodsNoAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
   public ByteBuffer GoodsNoInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
   public String ContractNo() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }

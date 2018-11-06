@@ -27,12 +27,14 @@ public class MsgConstants {
 	public final static String REGISTER_QUOTATION = "Q0001";
 	/** 推送行情 */
 	public final static String PUSH_QUOTATION = "Q0002";
-
+    //验证码
 	public final static String YZM = "T1000";
-
+    //登录
 	public final static String LOGIN = "T1001";
-
+    //商品列表
 	public final static String GOODS = "C1001";
+    //K线数据
+	public final static String KLINE = "Q1001";
 	
 	public final static String SUCCESS = "0";
 	/** 默认心跳报文 */

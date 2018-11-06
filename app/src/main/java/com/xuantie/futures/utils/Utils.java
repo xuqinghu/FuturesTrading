@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.os.Environment;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.xuantie.futures.App;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Method;
@@ -124,6 +127,98 @@ public class Utils {
     public static int dipToPx(Context context, float dip) {
         float density = context.getResources().getDisplayMetrics().density;
         return (int) (dip * density + 0.5f * (dip >= 0 ? 1 : -1));
+    }
+
+    /**
+     * 获取本地SD卡路径
+     *
+     * @return
+     */
+    public static String getSDPath() {
+        File sdDir = null;
+        try {
+            boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED); // 判断sd卡是否存在
+            File pp1 = new File("/external_sd");// 获取跟目录
+            File filesd2 = new File("/udisk");// 客户sd卡路径
+            File file = new File("/mnt/internal");// 客户sd卡路径
+            if (sdCardExist) {
+                sdDir = Environment.getExternalStorageDirectory();// 获取跟目录
+                return sdDir.toString();
+            } else if (filesd2.exists()) {
+                sdDir = filesd2;
+                return sdDir.toString();
+            } else if (pp1.exists()) {
+                sdDir = pp1;
+                return sdDir.toString();
+            } else if (file.exists()) {
+                sdDir = file;
+                return sdDir.toString();
+            } else {
+                return null;
+            }
+
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    /**
+     * 创建sd卡的目录
+     *
+     * @param dir
+     * @return
+     */
+    public static File creatSDDir(String dir) {
+        File appSDPathFile = new File(getSDPath() + "/" + "FuturesTrading");
+        if (!appSDPathFile.exists()) {
+            appSDPathFile.mkdirs();
+        }
+        File destFileDir = new File(appSDPathFile + "/" + dir);
+        if (!destFileDir.exists()) {
+            destFileDir.mkdirs();
+        }
+
+        return destFileDir;
+    }
+
+    /**
+     * 把string保存在文件中
+     *
+     * @param path
+     * @param filename
+     * @param content
+     */
+    public static void saveStringFile(String path, String filename, String content) {
+        File filePath = new File(getSDPath() + "/" + "FuturesTrading" + "/" + path);
+        if (!filePath.exists()) {
+            creatSDDir(path);
+        }
+        File fileAbsolutely = new File(filePath + "/" + filename);
+        if (!fileAbsolutely.exists()) {
+            try {
+                fileAbsolutely.createNewFile();
+                FileOutputStream fos = new FileOutputStream(fileAbsolutely);
+                fos.write(content.getBytes());
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            fileAbsolutely.delete();
+            try {
+                fileAbsolutely.createNewFile();
+                FileOutputStream fos = new FileOutputStream(fileAbsolutely);
+                fos.write(content.getBytes());
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package com.xuantie.futures;
 
+import android.Manifest;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+import com.netty.client.KlineNettyClient;
 import com.netty.client.NettyClient;
 import com.netty.client.NewNettyClient;
 import com.netty.flatbuffers.FbBizMsg;
@@ -21,8 +23,11 @@ import com.xuantie.futures.ui.mine.MineFragment;
 import com.xuantie.futures.ui.ranking.RankingFragment;
 import com.xuantie.futures.utils.Base64Util;
 import com.xuantie.futures.utils.StatusBarUtil;
+import com.xuantie.futures.utils.permission.IPermissionListener;
+import com.xuantie.futures.utils.permission.PermissionHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -74,8 +79,20 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initView() {
+        PermissionHelper.getInstance().request(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, new IPermissionListener() {
+            @Override
+            public void onAllowed() {
+
+            }
+
+            @Override
+            public void onRefused(List<String> permissions) {
+
+            }
+        });
         NewNettyClient.getInstance().connect();
         NettyClient.getInstance().connect();
+        KlineNettyClient.getInstance().connect();
     }
 
     @Override

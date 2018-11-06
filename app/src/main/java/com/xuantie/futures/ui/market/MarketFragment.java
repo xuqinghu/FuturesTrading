@@ -16,9 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.flyco.tablayout.SlidingTabLayout;
+import com.flyco.tablayout.listener.OnTabSelectListener;
 import com.netty.client.NettyClient;
 import com.netty.client.NewNettyClient;
 import com.netty.flatbuffers.FbBizMsg;
+import com.netty.flatbuffers.FbFuturesQuotation;
 import com.netty.flatbuffers.FbFuturesQuotationList;
 import com.netty.flatbuffers.FbMsgGoodInfo;
 import com.netty.flatbuffers.FbMsgGoodsInfoList;
@@ -51,6 +53,34 @@ public class MarketFragment extends BaseFragment {
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private MyPagerAdapter mAdapter;
     private String [] marketName;
+    private CommodityFragment mCommodityFragment;
+    private List<FbMsgGoodInfo> beans;
+    private FbFuturesQuotationList mFbFuturesQuotationList;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    for (int i = 0; i < marketName.length; i++) {
+                        CommodityFragment fragment = new CommodityFragment(beans,marketName[i]);
+                        mFragments.add(fragment);
+                    }
+                    if (mFragments.size() > 0 && mFragments != null) {
+                        mSlMarket.setViewPager(mVpMarket, marketName, getActivity(), mFragments);
+                    }
+                    if(mFragments.size()>0) {
+                        mCommodityFragment = (CommodityFragment) mFragments.get(0);
+                        sendTest();
+                    }
+                    break;
+                case 1:
+                    mCommodityFragment.setData(mFbFuturesQuotationList);
+                    break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -65,11 +95,21 @@ public class MarketFragment extends BaseFragment {
     private void initView() {
         mAdapter = new MyPagerAdapter(getFragmentManager());
         mVpMarket.setAdapter(mAdapter);
+        mSlMarket.setOnTabSelectListener(new OnTabSelectListener() {
+            @Override
+            public void onTabSelect(int position) {
+                mCommodityFragment = (CommodityFragment) mFragments.get(position);
+            }
+
+            @Override
+            public void onTabReselect(int position) {
+
+            }
+        });
     }
 
     private void initData(){
         sendGoodMsg();
-        sendTest();
         NewNettyClient.getInstance().getGoods(new NewNettyClient.GoodsListen() {
             @Override
             public void success(FbMsgGoodsInfoList resp) {
@@ -77,6 +117,7 @@ public class MarketFragment extends BaseFragment {
                 for(int i=0;i<resp.goodsInfoListLength();i++){
                     list.add(resp.goodsInfoList(i));
                 }
+                beans = list;
                 getMarketName(list);
             }
 
@@ -89,7 +130,8 @@ public class MarketFragment extends BaseFragment {
         NettyClient.getInstance().test(new NettyClient.TestListen() {
             @Override
             public void success(FbFuturesQuotationList resp) {
-                Log.d("FbFuturesQuotationList",resp.FbFuturesQuotationListLength()+"");
+                mFbFuturesQuotationList = resp;
+                handler.sendEmptyMessage(1);
             }
 
             @Override
@@ -111,13 +153,7 @@ public class MarketFragment extends BaseFragment {
             marketName [j] = name;
             j++;
         }
-        for (int i = 0; i < marketName.length; i++) {
-            CommodityFragment fragment = new CommodityFragment(beans,marketName[i]);
-            mFragments.add(fragment);
-        }
-        if (mFragments.size() > 0 && mFragments != null) {
-            mSlMarket.setViewPager(mVpMarket, marketName, getActivity(), mFragments);
-        }
+        handler.sendEmptyMessage(0);
     }
 
     private void sendTest(){
