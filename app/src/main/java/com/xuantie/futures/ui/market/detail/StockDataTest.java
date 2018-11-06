@@ -47,7 +47,8 @@ public class StockDataTest {
             float low =  fbKLineData.lowerPrice();
             float close = fbKLineData.closePrice();
             int volume = (int) fbKLineData.vol();
-            entrySet.addEntry(new Entry(open, high, low, close, volume, ""));
+            String time = String.valueOf(fbKLineData.Time());
+            entrySet.addEntry(new Entry(open, high, low, close, volume, time));
         }
         return entrySet;
     }

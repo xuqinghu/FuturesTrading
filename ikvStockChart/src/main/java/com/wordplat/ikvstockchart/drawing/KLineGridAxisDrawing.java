@@ -163,7 +163,7 @@ public class KLineGridAxisDrawing implements IDrawing {
                 render.mapPoints(pointCache);
 
                 canvas.drawText(
-                        ViewUtils.TimeStamp2Date(entrySet.getEntryList().get(i).getXLabel().substring(0,10),entrySet.getTimeType()),
+                        entrySet.getEntryList().get(i).getXLabel(),
                         pointCache[0],
                         kLineRect.bottom + render.getSizeColor().getXLabelSize(),
                         xLabelPaint);

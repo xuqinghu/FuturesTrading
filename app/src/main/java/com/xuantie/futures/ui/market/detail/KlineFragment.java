@@ -121,6 +121,11 @@ public class KlineFragment extends BaseFragment {
             @Override
             public void success(FbKLineDataList resp) {
                 Log.d("FbKLineDataList","日期:"+resp.DataList(0).Date()+"时间:"+resp.DataList(0).Time());
+                mEntrySet = StockDataTest.parseKLineData(resp);
+                mEntrySet.setSmallestFluctuation("0.01");
+                mEntrySet.computeStockIndex();
+                mKLineLayout.getKLineView().setEntrySet(mEntrySet);
+                mKLineLayout.getKLineView().notifyDataSetChanged();
             }
 
             @Override
