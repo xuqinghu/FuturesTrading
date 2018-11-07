@@ -72,6 +72,8 @@ public class KlineFragment extends BaseFragment {
     //日线、1分钟线、5分钟线等等
     private String mKlineType;
     private String contractNo;
+    private int decimalPlaces;
+    private double minChange;
 
     public static KlineFragment newInstance() {
         KlineFragment fragment = new KlineFragment();
@@ -82,6 +84,8 @@ public class KlineFragment extends BaseFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         contractNo = ((CommodityDetailActivity) activity).getcontractNo();//通过强转成宿主activity，就可以获取到传递过来的数据
+        decimalPlaces = ((CommodityDetailActivity) activity).getDecimalPlaces();
+        minChange = ((CommodityDetailActivity) activity).getMinChange();
     }
 
     @Nullable
@@ -109,7 +113,7 @@ public class KlineFragment extends BaseFragment {
             @Override
             public void success(FbKLineDataList resp) {
                 mEntrySet = StockDataTest.parseKLineData(resp, getTimeType());
-                mEntrySet.setSmallestFluctuation("0.01");
+                mEntrySet.setSmallestFluctuation(String.valueOf(minChange));
                 mEntrySet.computeStockIndex();
                 mKLineLayout.getKLineView().setEntrySet(mEntrySet);
                 mKLineLayout.getKLineView().notifyDataSetChanged();
@@ -126,7 +130,7 @@ public class KlineFragment extends BaseFragment {
         FlatBufferBuilder fb = new FlatBufferBuilder();
         int contract = fb.createString(contractNo);
         int lineType = fb.createString(mKlineType);
-        int rangeType = fb.createString("2");
+        int rangeType = fb.createString("1");
         int klineReq = FbKLineReq.createFbKLineReq(fb, contract, lineType, rangeType);
         fb.finish(klineReq);
         FlatBufferBuilder headbuilder = new FlatBufferBuilder();
@@ -140,6 +144,7 @@ public class KlineFragment extends BaseFragment {
     }
 
     private void initView() {
+        mKLineLayout.getKLineView().getRender().setDecimalPlaces(decimalPlaces);
         mKLineLayout.getKLineView().setEnableLeftRefresh(false);
         mKLineLayout.getkLineRender().setKLineMoveHandler(new KLineMoveHandler() {
             @Override

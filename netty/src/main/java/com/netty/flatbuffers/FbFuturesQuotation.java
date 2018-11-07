@@ -26,6 +26,8 @@ public final class FbFuturesQuotation extends Table {
   public String ContractNo;
   //小数位
   public int decimalPlaces;
+  //最小波动值
+  public double minChange;
   public float HighestPrice;
   public float LowestPrice;
   //买1

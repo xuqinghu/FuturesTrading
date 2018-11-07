@@ -69,6 +69,7 @@ public class CommodityFragment extends BaseFragment {
                 fbFuturesQuotation.GoodsName = mFbMsgGoodInfoList.get(i).goodsName();
                 fbFuturesQuotation.GoodsNo = mFbMsgGoodInfoList.get(i).goodsCode();
                 fbFuturesQuotation.decimalPlaces = CommonUtils.getDecimalPlaces(mFbMsgGoodInfoList.get(i).minChange());
+                fbFuturesQuotation.minChange = mFbMsgGoodInfoList.get(i).minChange();
                 mFbFuturesQuotationList.add(fbFuturesQuotation);
             }
         }
@@ -89,6 +90,7 @@ public class CommodityFragment extends BaseFragment {
                 intent.putExtra("BidPrice1",String.valueOf(mFbFuturesQuotationList.get(position).BidPrice1));
                 intent.putExtra("AskPrice1",String.valueOf(mFbFuturesQuotationList.get(position).AskPrice1));
                 intent.putExtra("decimalPlaces",mFbFuturesQuotationList.get(position).decimalPlaces);
+                intent.putExtra("minChange",mFbFuturesQuotationList.get(position).minChange);
                 intent.setClass(mActivity,CommodityDetailActivity.class);
                 startActivity(intent);
             }

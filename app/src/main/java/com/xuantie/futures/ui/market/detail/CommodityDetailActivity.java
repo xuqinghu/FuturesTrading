@@ -64,6 +64,7 @@ public class CommodityDetailActivity extends BaseActivity {
     //昨结
     private float preSettlementPrice;
     private int decimalPlaces;
+    private double minChange;
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private KlineFragment mKlineFragment;
     //推送过来的数据
@@ -131,6 +132,7 @@ public class CommodityDetailActivity extends BaseActivity {
         mTvHighestPrice.setText(getIntent().getStringExtra("HighestPrice"));
         mTvLowestPrice.setText(getIntent().getStringExtra("LowestPrice"));
         decimalPlaces = getIntent().getIntExtra("decimalPlaces",0);
+        minChange = getIntent().getDoubleExtra("minChange",0);
         updateColor(lastPrice);
         for (int i = 0; i < commodity.length; i++) {
             if (i == 0) {
@@ -193,6 +195,10 @@ public class CommodityDetailActivity extends BaseActivity {
     public String getcontractNo() {
         return contractNo;
     }
+
+    public int getDecimalPlaces() {return decimalPlaces;}
+
+    public double getMinChange() {return minChange;}
 
     @Override
     protected void onDestroy() {

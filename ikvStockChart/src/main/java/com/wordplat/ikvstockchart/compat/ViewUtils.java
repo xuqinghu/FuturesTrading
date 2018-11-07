@@ -69,6 +69,18 @@ public class ViewUtils {
             }else {
                 date = time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6,8);
             }
+        }else if(!TextUtils.isEmpty(time)&&time.length()==13){
+            if(TextUtils.equals(type,"0")){
+                date = time.substring(4,6)+"-"+time.substring(6,8)+" 0"+time.substring(8,9)+":"+time.substring(9,11);
+            }else {
+                date = time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6,8);
+            }
+        }else {
+            if(TextUtils.equals(type,"0")){
+                date = time.substring(4,6)+"-"+time.substring(6,8)+" "+"00:"+time.substring(8,9);
+            }else {
+                date = time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6,8);
+            }
         }
         return date;
     }

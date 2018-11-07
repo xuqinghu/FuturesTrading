@@ -161,7 +161,6 @@ public class KLineGridAxisDrawing implements IDrawing {
             if (i % count == 0) {
                 pointCache[0] = i + 0.5f;
                 render.mapPoints(pointCache);
-
                 canvas.drawText(
                         ViewUtils.StringStampDate(entrySet.getEntryList().get(i).getXLabel(),entrySet.getTimeType()),
                         pointCache[0],
