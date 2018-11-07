@@ -38,6 +38,8 @@ public class NettyClient {
 
 	private TestListen testListen;
 
+	private MarketListen marketListen;
+
 	private EventExecutorGroup bizGroup = null;
 	private static NettyClient mNettyClient;
 	public static NettyClient getInstance(){
@@ -79,8 +81,14 @@ public class NettyClient {
 										testListen.fail(msg);
 									}
 								case MsgConstants.PUSH_QUOTATION:
-									body = bizMsg.msgBodyAsByteBuffer();
-									FbFuturesQuotation fq1 = FbFuturesQuotation.getRootAsFbFuturesQuotation(body);
+									if(TextUtils.equals(code,MsgConstants.SUCCESS)){
+										body = bizMsg.msgBodyAsByteBuffer();
+										FbFuturesQuotation fbFuturesQuotation = FbFuturesQuotation.getRootAsFbFuturesQuotation(body);
+										marketListen.success(fbFuturesQuotation);
+									}else {
+										marketListen.fail(msg);
+									}
+
 							}
 
 						}
@@ -165,6 +173,15 @@ public class NettyClient {
 
 	public interface TestListen{
 		void success(FbFuturesQuotationList resp);
+		void fail(String msg);
+	}
+
+	public void getMarketData(MarketListen listen){
+		this.marketListen = listen;
+	}
+
+	public interface MarketListen{
+		void success(FbFuturesQuotation resp);
 		void fail(String msg);
 	}
 	

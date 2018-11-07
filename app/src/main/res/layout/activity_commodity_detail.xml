@@ -94,10 +94,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tv_last_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="1194.60"
-                android:textColor="#fe0000"
+                android:textColor="@color/red"
                 android:textSize="24sp" />
 
             <LinearLayout
@@ -106,6 +107,7 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/tv_priceLimit"
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -113,6 +115,7 @@
                     android:textColor="#fe0000" />
 
                 <TextView
+                    android:id="@+id/tv_upsDowns"
                     android:textSize="12sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -143,6 +146,7 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/tv_bidPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -158,6 +162,7 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/tv_highestPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -181,6 +186,7 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/tv_askPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"
@@ -196,6 +202,7 @@
                     android:textSize="13sp" />
 
                 <TextView
+                    android:id="@+id/tv_lowestPrice"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="5dp"

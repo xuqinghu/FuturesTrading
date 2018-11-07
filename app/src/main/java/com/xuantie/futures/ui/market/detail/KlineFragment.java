@@ -3,14 +3,12 @@ package com.xuantie.futures.ui.market.detail;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.drawable.Animatable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -19,14 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.netty.client.KlineNettyClient;
-import com.netty.client.NettyClient;
 import com.netty.flatbuffers.FbBizMsg;
 import com.netty.flatbuffers.FbKLineDataList;
 import com.netty.flatbuffers.FbKLineReq;
-import com.netty.flatbuffers.FbMsgLoginReq;
 import com.netty.flatbuffers.FlatBufferBuilder;
 import com.wordplat.ikvstockchart.InteractiveKLineLayout;
 import com.wordplat.ikvstockchart.KLineHandler;
@@ -37,16 +32,8 @@ import com.wordplat.ikvstockchart.entry.EntrySet;
 import com.wordplat.ikvstockchart.entry.SizeColor;
 import com.xuantie.futures.R;
 import com.xuantie.futures.base.BaseFragment;
-import com.xuantie.futures.network.ResultSubject;
-import com.xuantie.futures.network.RetrofitClient;
-import com.xuantie.futures.network.bean.ResultModel1;
-import com.xuantie.futures.network.bean.resp.KLineResp;
-import com.xuantie.futures.network.helper.RxResultHelper1;
-import com.xuantie.futures.network.helper.RxSchedulersHelper;
-import com.xuantie.futures.utils.Utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -79,8 +66,9 @@ public class KlineFragment extends BaseFragment {
     TextView mTvOpen;
     @BindView(R.id.tv_close)
     TextView mTvClose;
+    @BindView(R.id.tv_time)
+    TextView mTvTime;
     private EntrySet mEntrySet;
-    private List<KLineResp> list = new ArrayList<>();
     //日线、1分钟线、5分钟线等等
     private String mKlineType;
     private String contractNo;
@@ -114,14 +102,13 @@ public class KlineFragment extends BaseFragment {
         SizeColor.candleExtremumLabelSize = ViewUtils.dpTopx(getContext(), 7);
     }
 
-    public void getKlineData(String klineType){
+    public void getKlineData(String klineType) {
         mKlineType = klineType;
         sendKlineMsg();
         KlineNettyClient.getInstance().getKline(new KlineNettyClient.KlineListen() {
             @Override
             public void success(FbKLineDataList resp) {
-                Log.d("FbKLineDataList","日期:"+resp.DataList(0).Date()+"时间:"+resp.DataList(0).Time());
-                mEntrySet = StockDataTest.parseKLineData(resp);
+                mEntrySet = StockDataTest.parseKLineData(resp, getTimeType());
                 mEntrySet.setSmallestFluctuation("0.01");
                 mEntrySet.computeStockIndex();
                 mKLineLayout.getKLineView().setEntrySet(mEntrySet);
@@ -135,24 +122,25 @@ public class KlineFragment extends BaseFragment {
         });
     }
 
-    private void sendKlineMsg(){
+    private void sendKlineMsg() {
         FlatBufferBuilder fb = new FlatBufferBuilder();
         int contract = fb.createString(contractNo);
         int lineType = fb.createString(mKlineType);
         int rangeType = fb.createString("2");
-        int klineReq = FbKLineReq.createFbKLineReq(fb, contract,lineType,rangeType);
+        int klineReq = FbKLineReq.createFbKLineReq(fb, contract, lineType, rangeType);
         fb.finish(klineReq);
         FlatBufferBuilder headbuilder = new FlatBufferBuilder();
-        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
+        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte) '3', headbuilder.createString("test123456"),
                 headbuilder.createString("imtoken"),
                 headbuilder.createString(""),
                 headbuilder.createString("Q1001"),
-                0, 0, headbuilder.createString("20181026113000"),headbuilder.createByteVector(fb.sizedByteArray()));
+                0, 0, headbuilder.createString("20181026113000"), headbuilder.createByteVector(fb.sizedByteArray()));
         headbuilder.finish(head_ofs);
         KlineNettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
     }
 
     private void initView() {
+        mKLineLayout.getKLineView().setEnableLeftRefresh(false);
         mKLineLayout.getkLineRender().setKLineMoveHandler(new KLineMoveHandler() {
             @Override
             public void onMove(int maxVisibleIndex) {
@@ -164,9 +152,7 @@ public class KlineFragment extends BaseFragment {
         mKLineLayout.setKLineHandler(new KLineHandler() {
             @Override
             public void onLeftRefresh() {
-                mLeftLoadingImage.setVisibility(View.VISIBLE);
-                ((Animatable) mLeftLoadingImage.getDrawable()).start();
-                loadKLineData(true, "m1", list.get(0).getDataTime());
+
             }
 
             @Override
@@ -197,10 +183,11 @@ public class KlineFragment extends BaseFragment {
                 }
                 mLl.setLayoutParams(params); //使layout更新
                 mLl.setVisibility(View.VISIBLE);
-                mTvHigh.setText("高:1211.19");
-                mTvLow.setText("低:1211.11");
-                mTvOpen.setText("开:1211.10");
-                mTvClose.setText("收:1220.78");
+                mTvHigh.setText("高:" + entry.getHigh());
+                mTvLow.setText("低:" + entry.getLow());
+                mTvOpen.setText("开:" + entry.getOpen());
+                mTvClose.setText("收:" + entry.getClose());
+                mTvTime.setText(ViewUtils.StringStampDate(entry.getXLabel(),getTimeType()));
                 setMAText(entry);
             }
 
@@ -209,56 +196,6 @@ public class KlineFragment extends BaseFragment {
                 mLl.setVisibility(View.GONE);
             }
         });
-    }
-
-    private void loadKLineData(final boolean isLoadMore, String klineType, long time) {
-        RetrofitClient.getApi().getKline("NYMEX",
-                "CL", "m1", Utils.nowMillisecondTimestamp()
-                , 150)
-                .compose(RxSchedulersHelper.<ResultModel1<List<KLineResp>>>ioMain())
-                .compose(RxResultHelper1.<List<KLineResp>>handleResult())
-                .compose(this.<List<KLineResp>>bindToLifecycle())
-                .subscribe(new ResultSubject<List<KLineResp>>(this, false) {
-                    @Override
-                    public void onNext(List<KLineResp> kLineResps) {
-                        if (!isLoadMore) {
-                            if (kLineResps.size() < 150) {
-                                mKLineLayout.getKLineView().setEnableLeftRefresh(false);
-                            } else {
-                                mKLineLayout.getKLineView().setEnableLeftRefresh(true);
-                            }
-                            Collections.reverse(kLineResps); // 倒序排列
-                            list.addAll(kLineResps);
-                            mEntrySet = StockDataTest.parseKLineData(kLineResps, getTimeType());
-                            mEntrySet.setSmallestFluctuation("0.01");
-                            mEntrySet.computeStockIndex();
-                            mKLineLayout.getKLineView().setEntrySet(mEntrySet);
-                            mKLineLayout.getKLineView().notifyDataSetChanged();
-                        } else {
-                            for (int i = 0; i < kLineResps.size(); i++) {
-                                list.add(0, kLineResps.get(i));
-                            }
-                            mEntrySet = StockDataTest.parseKLineData(list, getTimeType());
-                            mEntrySet.computeStockIndex();
-                            List<Entry> entries = insertEntries(kLineResps.size(), mEntrySet);
-                            mKLineLayout.getKLineView().getRender().getEntrySet().insertFirst(entries);
-                            mKLineLayout.getKLineView().notifyDataSetChanged();
-                            mKLineLayout.getKLineView().refreshComplete(entries.size() > 0);
-                            mLeftLoadingImage.setVisibility(View.GONE);
-                            ((Animatable) mLeftLoadingImage.getDrawable()).stop();
-                            if (entries.size() == 0) {
-                                Toast.makeText(mActivity, "已经到达最左边了", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        super.onError(e);
-                        mLeftLoadingImage.setVisibility(View.GONE);
-                        ((Animatable) mLeftLoadingImage.getDrawable()).stop();
-                    }
-                });
     }
 
     private List<Entry> insertEntries(int size, EntrySet entrySet) {
@@ -342,12 +279,8 @@ public class KlineFragment extends BaseFragment {
     }
 
     private String getTimeType() {
-        if (TextUtils.equals(mKlineType, "day") || TextUtils.equals(mKlineType, "week"))
-            return "MM-dd";
-        if (TextUtils.equals(mKlineType, "month")) return "MM";
-        if (TextUtils.equals(mKlineType, "year")) return "yyyy";
-        if (TextUtils.equals(mKlineType, "m240")) return "MM-dd HH:mm";
-        return "HH:mm";
+        if (TextUtils.equals(mKlineType, "3-1")) return "1";
+        return "0";
     }
 
     @Override

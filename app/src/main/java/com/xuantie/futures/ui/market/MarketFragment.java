@@ -52,31 +52,39 @@ public class MarketFragment extends BaseFragment {
     Unbinder unbinder;
     private ArrayList<Fragment> mFragments = new ArrayList<>();
     private MyPagerAdapter mAdapter;
-    private String [] marketName;
+    private String[] marketName;
     private CommodityFragment mCommodityFragment;
     private List<FbMsgGoodInfo> beans;
     private FbFuturesQuotationList mFbFuturesQuotationList;
+    private FbFuturesQuotation mFbFuturesQuotation;
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 0:
                     for (int i = 0; i < marketName.length; i++) {
-                        CommodityFragment fragment = new CommodityFragment(beans,marketName[i]);
+                        CommodityFragment fragment = new CommodityFragment(beans, marketName[i]);
                         mFragments.add(fragment);
                     }
                     if (mFragments.size() > 0 && mFragments != null) {
                         mSlMarket.setViewPager(mVpMarket, marketName, getActivity(), mFragments);
                     }
-                    if(mFragments.size()>0) {
+                    if (mFragments.size() > 0) {
                         mCommodityFragment = (CommodityFragment) mFragments.get(0);
                         sendTest();
                     }
+                    mVpMarket.setOffscreenPageLimit(marketName.length);
                     break;
                 case 1:
-                    mCommodityFragment.setData(mFbFuturesQuotationList);
+                    for (int i = 0; i < mFragments.size(); i++) {
+                        CommodityFragment fragment = (CommodityFragment) mFragments.get(i);
+                        fragment.setData(mFbFuturesQuotationList);
+                    }
+                    break;
+                case 2:
+                    mCommodityFragment.refresh(mFbFuturesQuotation);
                     break;
             }
         }
@@ -106,15 +114,31 @@ public class MarketFragment extends BaseFragment {
 
             }
         });
+        mVpMarket.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCommodityFragment = (CommodityFragment) mFragments.get(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
-    private void initData(){
+    private void initData() {
         sendGoodMsg();
         NewNettyClient.getInstance().getGoods(new NewNettyClient.GoodsListen() {
             @Override
             public void success(FbMsgGoodsInfoList resp) {
                 List<FbMsgGoodInfo> list = new ArrayList<>();
-                for(int i=0;i<resp.goodsInfoListLength();i++){
+                for (int i = 0; i < resp.goodsInfoListLength(); i++) {
                     list.add(resp.goodsInfoList(i));
                 }
                 beans = list;
@@ -141,24 +165,41 @@ public class MarketFragment extends BaseFragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        NettyClient.getInstance().getMarketData(new NettyClient.MarketListen() {
+            @Override
+            public void success(FbFuturesQuotation resp) {
+                mFbFuturesQuotation = resp;
+                handler.sendEmptyMessage(2);
+            }
+
+            @Override
+            public void fail(String msg) {
+
+            }
+        });
+    }
+
     //获取交易所名称
-    private void getMarketName(List<FbMsgGoodInfo> beans){
+    private void getMarketName(List<FbMsgGoodInfo> beans) {
         Set<String> set = new HashSet();
         for (int i = 0; i < beans.size(); i++) {
             set.add(beans.get(i).marketName());
         }
         marketName = new String[set.size()];
         int j = 0;
-        for(String name:set){
-            marketName [j] = name;
+        for (String name : set) {
+            marketName[j] = name;
             j++;
         }
         handler.sendEmptyMessage(0);
     }
 
-    private void sendTest(){
+    private void sendTest() {
         FlatBufferBuilder headbuilder = new FlatBufferBuilder();
-        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte)'3' ,headbuilder.createString("test123456"),
+        int head_ofs = FbBizMsg.createFbBizMsg(headbuilder, (byte) '3', headbuilder.createString("test123456"),
                 headbuilder.createString("imtoken"),
                 headbuilder.createString(""),
                 headbuilder.createString("Q0001"),
@@ -167,7 +208,7 @@ public class MarketFragment extends BaseFragment {
         NettyClient.getInstance().sendQ(headbuilder.sizedByteArray());
     }
 
-    private void sendGoodMsg(){
+    private void sendGoodMsg() {
         FlatBufferBuilder headbuilder = new FlatBufferBuilder();
         int head_good = FbBizMsg.createFbBizMsg(headbuilder, (byte) '3', headbuilder.createString("test123456"),
                 headbuilder.createString("imtoken"),

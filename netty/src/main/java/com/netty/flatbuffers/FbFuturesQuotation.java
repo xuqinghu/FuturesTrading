@@ -19,8 +19,19 @@ public final class FbFuturesQuotation extends Table {
   public String GoodsNo() { int o = __offset(6); return o != 0 ? __string(o + bb_pos) : null; }
   public String GoodsName;
   public String GoodsNo;
+  //最新价
   public float LastPrice;
+  //昨结
+  public float PreSettlementPrice;
   public String ContractNo;
+  //小数位
+  public int decimalPlaces;
+  public float HighestPrice;
+  public float LowestPrice;
+  //买1
+  public float BidPrice1;
+  //卖1
+  public float AskPrice1;
   public ByteBuffer GoodsNoAsByteBuffer() { return __vector_as_bytebuffer(6, 1); }
   public ByteBuffer GoodsNoInByteBuffer(ByteBuffer _bb) { return __vector_in_bytebuffer(_bb, 6, 1); }
   public String ContractNo() { int o = __offset(8); return o != 0 ? __string(o + bb_pos) : null; }
@@ -67,6 +78,7 @@ public final class FbFuturesQuotation extends Table {
       float LastPrice,
       float ChangeValue,
       float ChangeRate,
+      //昨结
       float PreSettlementPrice,
       float PreClosePrice,
       float OpenPrice,
@@ -76,6 +88,7 @@ public final class FbFuturesQuotation extends Table {
       long OpenInterest,
       float ClosePrice,
       float SettlementPrice,
+      //买1
       float BidPrice1,
       long BidVolume1,
       float BidPrice2,
@@ -86,6 +99,7 @@ public final class FbFuturesQuotation extends Table {
       long BidVolume4,
       float BidPrice5,
       long BidVolume5,
+      //卖1
       float AskPrice1,
       long AskVolume1,
       float AskPrice2,

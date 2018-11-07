@@ -22,6 +22,7 @@ import com.netty.flatbuffers.FbMsgGoodInfo;
 import com.xuantie.futures.R;
 import com.xuantie.futures.base.BaseFragment;
 import com.xuantie.futures.ui.market.detail.CommodityDetailActivity;
+import com.xuantie.futures.utils.CommonUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,6 +68,7 @@ public class CommodityFragment extends BaseFragment {
                 FbFuturesQuotation fbFuturesQuotation = new FbFuturesQuotation();
                 fbFuturesQuotation.GoodsName = mFbMsgGoodInfoList.get(i).goodsName();
                 fbFuturesQuotation.GoodsNo = mFbMsgGoodInfoList.get(i).goodsCode();
+                fbFuturesQuotation.decimalPlaces = CommonUtils.getDecimalPlaces(mFbMsgGoodInfoList.get(i).minChange());
                 mFbFuturesQuotationList.add(fbFuturesQuotation);
             }
         }
@@ -77,8 +79,16 @@ public class CommodityFragment extends BaseFragment {
             @Override
             public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 Intent intent = new Intent();
+                intent.putExtra("goodsNo",mFbFuturesQuotationList.get(position).GoodsNo);
                 intent.putExtra("goodsName",mFbFuturesQuotationList.get(position).GoodsName);
                 intent.putExtra("contractNo",mFbFuturesQuotationList.get(position).ContractNo);
+                intent.putExtra("LastPrice",mFbFuturesQuotationList.get(position).LastPrice);
+                intent.putExtra("PreSettlementPrice",mFbFuturesQuotationList.get(position).PreSettlementPrice);
+                intent.putExtra("HighestPrice",String.valueOf(mFbFuturesQuotationList.get(position).HighestPrice));
+                intent.putExtra("LowestPrice",String.valueOf(mFbFuturesQuotationList.get(position).LowestPrice));
+                intent.putExtra("BidPrice1",String.valueOf(mFbFuturesQuotationList.get(position).BidPrice1));
+                intent.putExtra("AskPrice1",String.valueOf(mFbFuturesQuotationList.get(position).AskPrice1));
+                intent.putExtra("decimalPlaces",mFbFuturesQuotationList.get(position).decimalPlaces);
                 intent.setClass(mActivity,CommodityDetailActivity.class);
                 startActivity(intent);
             }
@@ -91,9 +101,29 @@ public class CommodityFragment extends BaseFragment {
                if(TextUtils.equals(resp.FbFuturesQuotationList(i).GoodsNo(),mFbFuturesQuotationList.get(j).GoodsNo)){
                    mFbFuturesQuotationList.get(j).LastPrice = resp.FbFuturesQuotationList(i).LastPrice();
                    mFbFuturesQuotationList.get(j).ContractNo = resp.FbFuturesQuotationList(i).ContractNo();
-                   mAdapter.notifyItemChanged(j);
+                   mFbFuturesQuotationList.get(j).PreSettlementPrice = resp.FbFuturesQuotationList(i).PreSettlementPrice();
+                   mFbFuturesQuotationList.get(j).HighestPrice = resp.FbFuturesQuotationList(i).HighestPrice();
+                   mFbFuturesQuotationList.get(j).LowestPrice = resp.FbFuturesQuotationList(i).LowestPrice();
+                   mFbFuturesQuotationList.get(j).BidPrice1 = resp.FbFuturesQuotationList(i).BidPrice1();
+                   mFbFuturesQuotationList.get(j).AskPrice1 = resp.FbFuturesQuotationList(i).AskPrice1();
                }
            }
+        }
+        mAdapter.setNewData(mFbFuturesQuotationList);
+    }
+
+    public void refresh(FbFuturesQuotation resp){
+        for(int i=0;i<mFbFuturesQuotationList.size();i++){
+            if(TextUtils.equals(resp.GoodsNo(),mFbFuturesQuotationList.get(i).GoodsNo)){
+                mFbFuturesQuotationList.get(i).LastPrice = resp.LastPrice();
+                mFbFuturesQuotationList.get(i).ContractNo = resp.ContractNo();
+                mFbFuturesQuotationList.get(i).PreSettlementPrice = resp.PreSettlementPrice();
+                mFbFuturesQuotationList.get(i).HighestPrice = resp.HighestPrice();
+                mFbFuturesQuotationList.get(i).LowestPrice = resp.LowestPrice();
+                if(mFbFuturesQuotationList.get(i).LastPrice!=resp.LastPrice){
+                    mAdapter.notifyItemChanged(i);
+                }
+            }
         }
     }
     @Override

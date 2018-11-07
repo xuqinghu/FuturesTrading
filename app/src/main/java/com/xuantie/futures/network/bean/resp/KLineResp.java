@@ -1,9 +1,8 @@
 package com.xuantie.futures.network.bean.resp;
 
 /**
- * Created by Administrator on 2018/10/10.
+ * Created by loro on 2017/2/8.
  */
-
 public class KLineResp {
     //最高
     public String high;

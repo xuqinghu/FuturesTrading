@@ -29,15 +29,7 @@ public class StockDataTest {
         return entrySet;
     }
 
-    public static EntrySet parseLightningData(List<String> prices) {
-        EntrySet entrySet = new EntrySet();
-        for (String price : prices) {
-            entrySet.addEntry(new Entry(Float.parseFloat(price)));
-        }
-        return entrySet;
-    }
-
-    public static EntrySet parseKLineData(FbKLineDataList fbKLineDataList){
+    public static EntrySet parseKLineData(FbKLineDataList fbKLineDataList,String timeType){
         final EntrySet entrySet = new EntrySet();
         FbKLineData fbKLineData = null;
         for(int i=0;i<fbKLineDataList.DataListLength();i++){
@@ -47,7 +39,8 @@ public class StockDataTest {
             float low =  fbKLineData.lowerPrice();
             float close = fbKLineData.closePrice();
             int volume = (int) fbKLineData.vol();
-            String time = String.valueOf(fbKLineData.Time());
+            String time = String.valueOf(fbKLineData.Date())+fbKLineData.Time();
+            entrySet.setTimeType(timeType);
             entrySet.addEntry(new Entry(open, high, low, close, volume, time));
         }
         return entrySet;

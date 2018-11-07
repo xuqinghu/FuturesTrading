@@ -61,6 +61,18 @@ public class ViewUtils {
         return date;
     }
 
+    public static String StringStampDate(String time,String type){
+        String date="";
+        if(!TextUtils.isEmpty(time)&&time.length()==14){
+            if(TextUtils.equals(type,"0")){
+                date = time.substring(4,6)+"-"+time.substring(6,8)+" "+time.substring(8,10)+":"+time.substring(10,12);
+            }else {
+                date = time.substring(0,4)+"-"+time.substring(4,6)+"-"+time.substring(6,8);
+            }
+        }
+        return date;
+    }
+
     public static DecimalFormat getDecimalFormat(DecimalFormat decimalFormatter,int decimalPlaces){
         switch (decimalPlaces){
             case 0:

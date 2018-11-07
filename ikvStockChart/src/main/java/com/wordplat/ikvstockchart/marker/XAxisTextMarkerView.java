@@ -89,7 +89,7 @@ public class XAxisTextMarkerView implements IMarkerView {
             Entry highlightEntry = render.getEntrySet().getHighlightEntry();
 
             if (highlightEntry != null) {
-                float width = markerTextPaint.measureText(ViewUtils.TimeStamp2Date(highlightEntry.getXLabel().substring(0,10),render.getEntrySet().getTimeType())) + 50;
+                float width = markerTextPaint.measureText(ViewUtils.StringStampDate(highlightEntry.getXLabel(),render.getEntrySet().getTimeType())) + 50;
                 highlightPointX = highlightPointX - width / 2;
                 if (highlightPointX < contentRect.left) {
                     highlightPointX = contentRect.left;
@@ -116,7 +116,7 @@ public class XAxisTextMarkerView implements IMarkerView {
                 markerInsets.right = markerInsets.left + width - inset * 2;
                 markerInsets.bottom = markerInsets.top + height - inset * 2;
                 canvas.drawRect(markerInsets, markerBorderPaint);
-                canvas.drawText(ViewUtils.TimeStamp2Date(highlightEntry.getXLabel().substring(0,10),render.getEntrySet().getTimeType()),
+                canvas.drawText(ViewUtils.StringStampDate(highlightEntry.getXLabel(),render.getEntrySet().getTimeType()),
                         markerInsets.left + markerInsets.width() / 2,
                         (markerInsets.top + markerInsets.bottom - fontMetrics.top - fontMetrics.bottom) / 2,
                         markerTextPaint);
